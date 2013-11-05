@@ -182,6 +182,12 @@ class netserver:
 					
 				else: # connection not permitted by accesscache
 					debug.msg(netserver.DBGTAG_REJECT, "rejecting connection from %s:%d (not permitted by accesscache)" % i[1])
+					try:
+						i[0].shutdown(socket.SHUT_RDWR)
+					except: pass
+					try:
+						i[0].close()
+					except: pass
 					
 			except:
 				debug.exc(self)
