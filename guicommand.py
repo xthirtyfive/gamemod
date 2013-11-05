@@ -54,7 +54,7 @@ class guicommand:
 			return False
 			
 	@staticmethod
-	def args_min(cmd_): # check if command cmd requires args to be joined toghether
+	def args_min(cmd_): # return the minimum number of required arguments for this command
 		cmd = cmd_.lower()
 		try:
 			if commands.has_key(cmd): return commands[cmd].ARGS_MIN
