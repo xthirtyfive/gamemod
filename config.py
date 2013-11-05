@@ -13,7 +13,7 @@
 #    GNU General Public License for more details.
 #
 #    You should have received a copy of the GNU General Public License
-#    along with gamemod.  If not, see <http:#www.gnu.org/licenses/>.
+#    along with gamemod.  If not, see <http://www.gnu.org/licenses/>.
 
 LISTEN_ADDR = "0.0.0.0"
 LISTEN_PORT = 28787
