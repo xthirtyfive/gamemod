@@ -52,7 +52,7 @@ class gamemod:
 		self.gui.load()
 		
 		self.masterserver = masterserver(self.registeredservers, self.pendingservers) # let gameservers register at this (regserv) and let gameservers be registered by someone else (suggest)
-		self.guiprovider = guiprovider(self.gui.onrequest) # provide the gamemod gui & server list
+		self.guiprovider = guiprovider(self.onguirequest) # provide the gamemod gui & server list
 		self.statsprovider = statsprovider(self) # provide access to stats via additional commands
 		
 		# listen for connections from both clients requesting list of servers and servers trying to register and forward them to all functions in list respectively, until one of them returns a reply
@@ -62,12 +62,13 @@ class gamemod:
 		# handle replies from servers
 		self.servercommunicator = servercommunicator(self.registeredservers, self.pendingservers)
 	
-	def onrequest(self, line, addr, build):
-		if line == guiprovider.LIST_REQUEST or line == guiprovider.READABLELIST_REQUEST:
-			self.registeredservers.sort()
-			
-		elif addr[0] == "127.0.0.1":
-		
+	def onguirequest(self, *args):
+		# called when the guiprovider needs the gui to be built
+		self.registeredservers.sort()
+		return self.gui.onrequest(*args)
+	
+	def onrequest(self, line, addr, build):			
+		if addr[0] == "127.0.0.1":
 			forceupdategui = line == "forceupdategui"
 			if forceupdategui or line == "updategui":
 				succ, msg = self.gui.update(force=forceupdategui)
