@@ -21,7 +21,7 @@ def escape(s):
 def replacequotes(s):
 	return s.replace("\"", "'")
 
-def delroofs(s):
+def delcarets(s):
 	return s.replace("^", "")
 
 def delcolors(s):
@@ -35,7 +35,7 @@ def delspaces(s):
 	return s.replace(" ", "").replace("\t", "")
 
 def safe(s):
-	return delcolors(replacequotes(delroofs(s)))
+	return delcolors(replacequotes(delcarets(s)))
 
 def safename(s):
 	return safeword(s)
