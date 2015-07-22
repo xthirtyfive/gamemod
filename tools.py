@@ -15,6 +15,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with gamemod.  If not, see <http:#www.gnu.org/licenses/>.
 
+import string
+
 def escape(s):
 	return s.replace("^", "^^").replace("\"", "^\"")
 
@@ -42,3 +44,20 @@ def safename(s):
 
 def safeword(s):
 	return delspaces(safe(s))
+
+ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!"#$%&()*+,-./:;<=>?@[]_{|}~'
+
+def filterstr(s, spaces = True):
+	return "".join(c for c in s if (c in ALLOWED_CHARS or (c == " " and spaces)))
+
+def filterclientname(s):
+	return filterstr(s, spaces = False)
+
+def filterclientteam(s):
+	return filterstr(s, spaces = False)
+
+def filterserverdesc(s):
+	return filterstr(s, spaces = True)
+
+def filtermap(s):
+	return filterstr(s, spaces = True)

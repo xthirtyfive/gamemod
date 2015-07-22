@@ -44,7 +44,7 @@ class guicommand:
 			return ((commands[cmd](g, args, standalone), None) if (type(commands[cmd]) == types.ClassType or type(commands[cmd]) == types.FunctionType) else (commands[cmd], None)) if commands.has_key(cmd) else (None, "command \"%s\" not found" % cmd)
 		except guicommanderror as e:
 			return None, str(e)
-	
+
 	@staticmethod
 	def args_whole(cmd_): # check if command cmd requires args to be joined toghether
 		cmd = cmd_.lower()
@@ -52,7 +52,7 @@ class guicommand:
 			return commands.has_key(cmd) and commands[cmd].ARGS_WHOLE
 		except:
 			return False
-			
+
 	@staticmethod
 	def args_min(cmd_): # return the minimum number of required arguments for this command
 		cmd = cmd_.lower()
@@ -60,7 +60,7 @@ class guicommand:
 			if commands.has_key(cmd): return commands[cmd].ARGS_MIN
 		except:
 			return 0
-	
+
 	@staticmethod
 	def args_guiline(cmd_): # check if command arguments should be provided as guiline
 		cmd = cmd_.lower()
@@ -68,12 +68,12 @@ class guicommand:
 			return commands.has_key(cmd) and commands[cmd].ARGS_GUILINE
 		except:
 			return False
-		
-		
+
+
 class guicommanderror:
 	def __init__(self, msg):
 		self.msg = msg
-	
+
 	def __str__(self):
 		return self.msg
 
@@ -90,7 +90,7 @@ commands["servercount"] = servercount
 class forservers:
 	ARGS_GUILINE = True # arguments should be provided as guiline (which can then contain guicommands again)
 	ARGS_WHOLE = True
-	
+
 	def __init__(self, g, args, standalone):
 		self.g = g
 		self.guiline = args[0]
@@ -123,7 +123,7 @@ class escapedesc:
 	def __init__(self, g, args, standalone):
 		if standalone: raise guicommanderror("can not stand alone")
 	def __str__(self, server):
-		return str(tools.safe(server.desc))
+		return str(tools.filterserverdesc(server.desc))
 commands["escapedesc"] = escapedesc
 
 class clients:
@@ -147,7 +147,7 @@ class escapeplayerlist:
 		s = ""
 		space = False
 		for (cn, client) in server.clients.iterator():
-			s += (" " if space else "") + tools.safename(client.name)
+			s += (" " if space else "") + tools.filterclientname(client.name)
 			space = True
 		return s
 commands["escapeplayerlist"] = escapeplayerlist
@@ -159,7 +159,7 @@ class escapedetailplayerlist:
 		s = ""
 		space = False
 		for (cn, client) in server.clients.iterator():
-			s += ('%s"%s %d %s %d %d"' % ((" " if space else ""), tools.safeword(client.name), cn, tools.safeword(client.team), client.priv, client.state))
+			s += ('%s"%s %d %s %d %d"' % ((" " if space else ""), tools.filterclientname(client.name), cn, tools.filterclientteam(client.team), client.priv, client.state))
 			space = True
 		return s
 commands["escapedetailplayerlist"] = escapedetailplayerlist
@@ -175,7 +175,7 @@ class map:
 	def __init__(self, g, args, standalone):
 		if standalone: raise guicommanderror("can not stand alone")
 	def __str__(self, server):
-		return tools.safe(server.map)
+		return tools.filtermap(server.map)
 commands["map"] = map
 
 class gamemode:
@@ -275,7 +275,7 @@ class sumactiveservers:
 			sumactiveservers.N += 1
 		return ""
 commands["sumactiveservers"] = sumactiveservers
-			
+
 
 
 
@@ -287,7 +287,7 @@ class primcolor:
 			self.set = "^fs^f"+args[0]
 		else:
 			self.set = None
-			
+
 	def __str__(self):
 		if self.set:
 			primcolor.s = self.set

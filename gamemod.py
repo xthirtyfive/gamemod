@@ -33,73 +33,73 @@ from statsprovider import statsprovider
 # gamemod v5 (Aug 2012)
 
 class gamemod:
-	
-	VERSION = "5.0j"
+
+	VERSION = "5.0k"
 
 	def __init__(self):
 		self.version = gamemod.VERSION
-	
+
 		self.bannedservers = serverlist()
 		self.registeredservers = serverlist(banned=self.bannedservers)
 		self.pendingservers = serverlist(banned=self.bannedservers)
-		
+
 		self.masterclient = masterclient(self.pendingservers) # fetch gameservers from sauerbraten.org
-		
+
 		self.additionalservers = additionalservers(self.registeredservers, self.pendingservers, self.bannedservers) # fetch additional gameserver from servers.cfg and ban servers in banned.cfg
 		self.additionalservers.load()
-		
+
 		self.gui = gui(self)
 		self.gui.load()
-		
+
 		self.masterserver = masterserver(self.registeredservers, self.pendingservers) # let gameservers register at this (regserv) and let gameservers be registered by someone else (suggest)
 		self.guiprovider = guiprovider(self.onguirequest) # provide the gamemod gui & server list
 		self.statsprovider = statsprovider(self) # provide access to stats via additional commands
-		
+
 		# listen for connections from both clients requesting list of servers and servers trying to register and forward them to all functions in list respectively, until one of them returns a reply
 		self.netserver = netserver([self.onrequest, self.masterserver.onrequest, self.guiprovider.onrequest, self.statsprovider.onrequest])
-		
+
 		# ping servers and kick them out if they time out / add pending servers as registered if they reply in time
 		# handle replies from servers
 		self.servercommunicator = servercommunicator(self.registeredservers, self.pendingservers)
-	
+
 	def onguirequest(self, *args):
 		# called when the guiprovider needs the gui to be built
 		self.registeredservers.sort()
 		return self.gui.onrequest(*args)
-	
-	def onrequest(self, line, addr, build):			
+
+	def onrequest(self, line, addr, build):
 		if addr[0] == "127.0.0.1":
 			forceupdategui = line == "forceupdategui"
 			if forceupdategui or line == "updategui":
 				succ, msg = self.gui.update(force=forceupdategui)
 				return ("gui updated successfully: %s" if succ else "could not update gui: %s") % msg, True
-				
+
 			elif line == "updateservers":
 				succ, msg = self.additionalservers.updateservers()
 				return ("servers updated successfully: %s" if succ else "could not update servers: %s") % msg, True
-				
+
 			elif line == "updatebanned":
 				succ, msg = self.additionalservers.updatebanned()
 				return ("banned servers updated successfully: %s" if succ else "could not update banned servers: %s") % msg, True
-				
+
 			elif line == "exc":
 				(0 + "s")
 				return "exception has been raised", False
-				
+
 			elif line == "catchexc":
 				try:
 					(0 + "s")
 				except:
 					debug.exc()
 				return "raised exception has been caught", False
-				
+
 		return None, False
 
 
 
 def main():
 	debug.msg(True, "--- gamemod masterserver %s starting up ---" % gamemod.VERSION)
-	
+
 	g = gamemod()
 	try:
 		while True: time.sleep(1) # TODO
