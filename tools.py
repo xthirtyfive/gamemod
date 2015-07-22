@@ -45,7 +45,7 @@ def safename(s):
 def safeword(s):
 	return delspaces(safe(s))
 
-ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!"#$%&()*+,-./:;<=>?@[]_{|}~'
+ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&()*+,-./:;<=>?@[]_{|}~'
 
 def filterstr(s, spaces = True):
 	return "".join(c for c in s if (c in ALLOWED_CHARS or (c == " " and spaces)))
